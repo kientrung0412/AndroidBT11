@@ -22,43 +22,40 @@ import com.hanabi.apircvdemo.models.News;
 import com.hanabi.apircvdemo.models.NewsResponse;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class NewsFragment extends Fragment implements NewsAdapter.NewsItemOnClickListener, Callback<NewsResponse> {
+public class SaveFragment extends Fragment implements NewsAdapter.NewsItemOnClickListener {
 
     private RecyclerView recyclerView;
     private Activity activity;
     private NewsAdapter adapter;
-    private final String apiKey = "282a23bed8bb46aa8f7427d5686b819e", language = "vi";
-    private LoadingScreen loadingScreen;
-
-    public LoadingScreen getLoadingScreen() {
-        return loadingScreen;
-    }
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_news, container, false);
+        return inflater.inflate(R.layout.fragment_save, container, false);
     }
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         activity = (MainActivity) getActivity();
-        loadingScreen = new LoadingScreen(activity);
-        recyclerView = activity.findViewById(R.id.rc_news);
+        recyclerView = activity.findViewById(R.id.rc_save);
         recyclerView.setLayoutManager(new LinearLayoutManager(activity));
         adapter = new NewsAdapter(getLayoutInflater());
         adapter.setListener(this);
         recyclerView.setAdapter(adapter);
+        fillData();
+
     }
 
-    public void fillData(String keySearch) {
-        ApiBuilder.getInstance().getNews(keySearch, apiKey, language).enqueue(this);
+    public void fillData() {
+        List<News> news = AppDatabase.getInstance(activity).newsDao().getList();
+        adapter.setData(news);
     }
 
     @Override
@@ -73,26 +70,16 @@ public class NewsFragment extends Fragment implements NewsAdapter.NewsItemOnClic
         showPopupMenu(news, view);
     }
 
-    @Override
-    public void onResponse(Call<NewsResponse> call, Response<NewsResponse> response) {
-        ArrayList<News> news = response.body().getNews();
-        adapter.setData(news);
-        loadingScreen.dismissLoadingDialog();
-    }
-
-    @Override
-    public void onFailure(Call<NewsResponse> call, Throwable t) {
-        Toast.makeText(activity, t.getMessage(), Toast.LENGTH_SHORT).show();
-    }
-
     private void showPopupMenu(News news, View view) {
         PopupMenu popupMenu = new PopupMenu(activity, view);
-        popupMenu.inflate(R.menu.news_menu);
+        popupMenu.inflate(R.menu.save_menu);
         popupMenu.setOnMenuItemClickListener(item -> {
-            AppDatabase.getInstance(activity).newsDao().insert(news);
-            Toast.makeText(activity, "Lưu thành công", Toast.LENGTH_SHORT).show();
+            AppDatabase.getInstance(activity).newsDao().delete(news);
+            Toast.makeText(activity, "Xóa thành công", Toast.LENGTH_SHORT).show();
+            fillData();
             return true;
         });
         popupMenu.show();
     }
+
 }

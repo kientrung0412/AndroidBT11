@@ -13,20 +13,21 @@ import com.hanabi.apircvdemo.R;
 import com.hanabi.apircvdemo.models.News;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
 public class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.NewsHoler> {
 
     private LayoutInflater inflater;
-    private ArrayList<News> data;
+    private List<News> data;
     private NewsItemOnClickListener listener;
 
     public NewsAdapter(LayoutInflater inflater) {
         this.inflater = inflater;
     }
 
-    public void setData(ArrayList<News> data) {
+    public void setData(List<News> data) {
         this.data = data;
         notifyDataSetChanged();
     }
@@ -46,8 +47,12 @@ public class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.NewsHoler> {
     public void onBindViewHolder(@NonNull NewsHoler holder, int position) {
         News news = data.get(position);
         holder.bindView(news);
-        if (listener != null){
+        if (listener != null) {
             holder.itemView.setOnClickListener(view -> listener.itemOnClick(news));
+            holder.itemView.setOnLongClickListener(view -> {
+                listener.itemOnLongClick(news, view);
+                return true;
+            });
         }
     }
 
@@ -80,5 +85,7 @@ public class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.NewsHoler> {
 
     public interface NewsItemOnClickListener {
         void itemOnClick(News news);
+
+        void itemOnLongClick(News news, View view);
     }
 }

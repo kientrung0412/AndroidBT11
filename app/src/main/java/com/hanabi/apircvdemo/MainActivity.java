@@ -5,11 +5,14 @@ import androidx.appcompat.widget.SearchView;
 import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
+import androidx.viewpager.widget.ViewPager;
 
 import android.os.Bundle;
 import android.view.Menu;
 import android.widget.Toast;
 
+import com.google.android.material.tabs.TabLayout;
+import com.hanabi.apircvdemo.adapter.MainPagerAdapter;
 import com.hanabi.apircvdemo.models.News;
 
 
@@ -17,36 +20,50 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
 
     public static final String EXTRA_URL_NEWS = "extra.URL.NEWS";
     private Toolbar toolbar;
+    private MainPagerAdapter adapter;
     private SearchView searchView;
+    private ViewPager viewPager;
+    private TabLayout tabLayout;
 
-    private NewsFragment newsFragment = new NewsFragment();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         initViews();
-        initFragment();
-        showFragment(newsFragment);
-    }
 
-    private void initFragment() {
-        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-        transaction.add(R.id.fl_main, newsFragment);
-        transaction.commit();
-    }
-
-    private void showFragment(Fragment fragment) {
-        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-        transaction.hide(newsFragment);
-        transaction.show(fragment);
-//        transaction.replace(R.id.fl_main, fragment);
-        transaction.commit();
     }
 
     private void initViews() {
         toolbar = findViewById(R.id.tb_main);
+        viewPager = findViewById(R.id.vp_main);
+        tabLayout = findViewById(R.id.tl_main);
+
+        setupViewPager();
+        tabLayout.setupWithViewPager(viewPager);
         setSupportActionBar(toolbar);
+    }
+
+    private void setupViewPager() {
+        adapter = new MainPagerAdapter(getSupportFragmentManager(), 1);
+        viewPager.setCurrentItem(0);
+        viewPager.setAdapter(adapter);
+        viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+
+            }
+
+            @Override
+            public void onPageSelected(int position) {
+                adapter.getSaveFragment().fillData();
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {
+
+            }
+        });
     }
 
     @Override
@@ -61,8 +78,9 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
 
     @Override
     public boolean onQueryTextSubmit(String query) {
-        newsFragment.getLoadingScreen().startLoadingdialog();
-        newsFragment.fillData(query);
+        adapter.getNewsFragment().getLoadingScreen().startLoadingdialog();
+        adapter.getNewsFragment().fillData(query);
+        searchView.clearFocus();
         return false;
     }
 
