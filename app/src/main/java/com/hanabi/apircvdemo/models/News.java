@@ -26,6 +26,8 @@ public class News {
     @ColumnInfo
     @SerializedName("publishedAt")
     private String publishedAt;
+    @ColumnInfo
+    private Boolean bookmarked = false;
 
     public long getId() {
         return id;
@@ -73,5 +75,13 @@ public class News {
 
     public void setPublishedAt(String publishedAt) {
         this.publishedAt = publishedAt;
+    }
+
+    public Boolean getBookmarked() {
+        return bookmarked;
+    }
+
+    public void setBookmarked(Boolean bookmarked) {
+        this.bookmarked = bookmarked;
     }
 }

@@ -1,30 +1,37 @@
 package com.hanabi.apircvdemo;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SearchView;
 import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentTransaction;
+
 import androidx.viewpager.widget.ViewPager;
 
 import android.os.Bundle;
 import android.view.Menu;
-import android.widget.Toast;
 
 import com.google.android.material.tabs.TabLayout;
+import com.google.android.material.tabs.TabLayoutMediator;
 import com.hanabi.apircvdemo.adapter.MainPagerAdapter;
-import com.hanabi.apircvdemo.models.News;
 
 
 public class MainActivity extends AppCompatActivity implements SearchView.OnQueryTextListener {
 
     public static final String EXTRA_URL_NEWS = "extra.URL.NEWS";
+
     private Toolbar toolbar;
     private MainPagerAdapter adapter;
     private SearchView searchView;
     private ViewPager viewPager;
     private TabLayout tabLayout;
 
+    private NewsFragment newsFragment = new NewsFragment();
+    private SaveFragment saveFragment = new SaveFragment();
+    private BookmarksFragment bookmarksFragment = new BookmarksFragment();
+
+
+    private Fragment[] fragments = new Fragment[]{newsFragment, saveFragment, bookmarksFragment};
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,14 +47,13 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
         tabLayout = findViewById(R.id.tl_main);
 
         setupViewPager();
-        tabLayout.setupWithViewPager(viewPager);
         setSupportActionBar(toolbar);
     }
 
     private void setupViewPager() {
-        adapter = new MainPagerAdapter(getSupportFragmentManager(), 1);
-        viewPager.setCurrentItem(0);
+        adapter = new MainPagerAdapter(getSupportFragmentManager(), fragments);
         viewPager.setAdapter(adapter);
+        tabLayout.setupWithViewPager(viewPager);
         viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
@@ -56,7 +62,13 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
 
             @Override
             public void onPageSelected(int position) {
-                adapter.getSaveFragment().fillData();
+                switch (position) {
+                    case 1:
+                        saveFragment.fillData();
+                        break;
+                    case 2:
+                        bookmarksFragment.fillData();
+                }
             }
 
             @Override
@@ -64,6 +76,8 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
 
             }
         });
+
+
     }
 
     @Override
@@ -73,13 +87,15 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
         searchView = (SearchView) menu.findItem(R.id.it_app_bar_search).getActionView();
         searchView.setQueryHint("Bạn cần tìm gì.....");
         searchView.setOnQueryTextListener(this);
+        viewPager.setCurrentItem(0);
         return true;
     }
 
     @Override
     public boolean onQueryTextSubmit(String query) {
-        adapter.getNewsFragment().getLoadingScreen().startLoadingdialog();
-        adapter.getNewsFragment().fillData(query);
+        newsFragment.getLoadingScreen().startLoadingdialog();
+        newsFragment.fillData(query);
+        viewPager.setCurrentItem(0);
         searchView.clearFocus();
         return false;
     }
@@ -88,4 +104,5 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
     public boolean onQueryTextChange(String newText) {
         return false;
     }
+
 }

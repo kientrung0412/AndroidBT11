@@ -23,4 +23,7 @@ public interface NewsDao {
 
     @Query("SELECT * FROM news")
     List<News> getList();
+
+    @Query("SELECT * FROM news WHERE news.bookmarked == :bookmarks ")
+    List<News> getBookmarksList(Boolean bookmarks);
 }

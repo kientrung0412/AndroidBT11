@@ -16,17 +16,10 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.hanabi.apircvdemo.adapter.NewsAdapter;
-import com.hanabi.apircvdemo.api.ApiBuilder;
 import com.hanabi.apircvdemo.dao.AppDatabase;
 import com.hanabi.apircvdemo.models.News;
-import com.hanabi.apircvdemo.models.NewsResponse;
 
-import java.util.ArrayList;
 import java.util.List;
-
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 
 public class SaveFragment extends Fragment implements NewsAdapter.NewsItemOnClickListener {
 
@@ -43,7 +36,7 @@ public class SaveFragment extends Fragment implements NewsAdapter.NewsItemOnClic
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        activity = (MainActivity) getActivity();
+        activity = getActivity();
         recyclerView = activity.findViewById(R.id.rc_save);
         recyclerView.setLayoutManager(new LinearLayoutManager(activity));
         adapter = new NewsAdapter(getLayoutInflater());
@@ -54,7 +47,7 @@ public class SaveFragment extends Fragment implements NewsAdapter.NewsItemOnClic
     }
 
     public void fillData() {
-        List<News> news = AppDatabase.getInstance(activity).newsDao().getList();
+        List<News> news = AppDatabase.getInstance(activity).newsDao().getBookmarksList(false);
         adapter.setData(news);
     }
 
@@ -72,11 +65,24 @@ public class SaveFragment extends Fragment implements NewsAdapter.NewsItemOnClic
 
     private void showPopupMenu(News news, View view) {
         PopupMenu popupMenu = new PopupMenu(activity, view);
-        popupMenu.inflate(R.menu.save_menu);
+        popupMenu.inflate(R.menu.menu_save);
         popupMenu.setOnMenuItemClickListener(item -> {
-            AppDatabase.getInstance(activity).newsDao().delete(news);
-            Toast.makeText(activity, "Xóa thành công", Toast.LENGTH_SHORT).show();
+            String message = "Có lỗi";
+            switch (item.getItemId()) {
+                case R.id.it_delete:
+                    AppDatabase.getInstance(activity).newsDao().delete(news);
+                    message = "Xóa thành công";
+                    break;
+                case R.id.it_add_bookmarks:
+                    news.setBookmarked(true);
+                    AppDatabase.getInstance(activity).newsDao().update(news);
+                    message = "Đã thêm vào mục yêu thích";
+                    break;
+            }
+
+            Toast.makeText(activity, message, Toast.LENGTH_SHORT).show();
             fillData();
+
             return true;
         });
         popupMenu.show();

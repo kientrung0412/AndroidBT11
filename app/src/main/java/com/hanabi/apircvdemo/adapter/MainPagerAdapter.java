@@ -3,45 +3,33 @@ package com.hanabi.apircvdemo.adapter;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentActivity;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentPagerAdapter;
+import androidx.viewpager2.adapter.FragmentStateAdapter;
 
 import com.hanabi.apircvdemo.NewsFragment;
 import com.hanabi.apircvdemo.SaveFragment;
 
 public class MainPagerAdapter extends FragmentPagerAdapter {
 
-    private NewsFragment newsFragment = new NewsFragment();
-    private SaveFragment saveFragment = new SaveFragment();
+    Fragment[] fragments;
 
-    public NewsFragment getNewsFragment() {
-        return newsFragment;
+    public MainPagerAdapter(@NonNull FragmentManager fm, Fragment... fragment) {
+        super(fm, FragmentPagerAdapter.BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT);
+        this.fragments = fragment;
     }
 
-    public SaveFragment getSaveFragment() {
-        return saveFragment;
-    }
-
-    public MainPagerAdapter(@NonNull FragmentManager fm, int behavior) {
-        super(fm, behavior);
-    }
 
     @NonNull
     @Override
     public Fragment getItem(int position) {
-        switch (position) {
-            case 0:
-            default:
-                return newsFragment;
-            case 1:
-                return saveFragment;
-        }
+        return fragments[position];
     }
 
     @Override
     public int getCount() {
-        //số tab hiển thị
-        return 2;
+        return fragments.length;
     }
 
     @Nullable
@@ -49,10 +37,13 @@ public class MainPagerAdapter extends FragmentPagerAdapter {
     public CharSequence getPageTitle(int position) {
         switch (position) {
             case 0:
-            default:
-                return "Tin mới";
+                return "tin mới";
             case 1:
-                return "Tin đã lưu";
+                return "đã lưu";
+            case 2:
+                return "yêu thích";
+            default:
+                return null;
         }
     }
 }

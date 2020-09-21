@@ -8,7 +8,7 @@ import androidx.room.RoomDatabase;
 
 import com.hanabi.apircvdemo.models.News;
 
-@Database(entities = News.class, version = 1)
+@Database(entities = News.class, version = 2)
 public abstract class AppDatabase extends RoomDatabase {
 
     private static AppDatabase database;
