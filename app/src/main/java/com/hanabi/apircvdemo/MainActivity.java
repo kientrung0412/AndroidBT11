@@ -14,6 +14,7 @@ import android.view.Menu;
 import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.tabs.TabLayoutMediator;
 import com.hanabi.apircvdemo.adapter.MainPagerAdapter;
+import com.hanabi.apircvdemo.animation.DepthPageTransformer;
 
 
 public class MainActivity extends AppCompatActivity implements SearchView.OnQueryTextListener {
@@ -47,13 +48,15 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
         tabLayout = findViewById(R.id.tl_main);
 
         setupViewPager();
+        tabLayout.setupWithViewPager(viewPager);
         setSupportActionBar(toolbar);
     }
 
     private void setupViewPager() {
         adapter = new MainPagerAdapter(getSupportFragmentManager(), fragments);
         viewPager.setAdapter(adapter);
-        tabLayout.setupWithViewPager(viewPager);
+        viewPager.setPageTransformer(true, new DepthPageTransformer());
+        viewPager.setOffscreenPageLimit(2);
         viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {

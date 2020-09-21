@@ -1,5 +1,7 @@
 package com.hanabi.apircvdemo.adapter;
 
+import android.view.ViewGroup;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
@@ -46,4 +48,5 @@ public class MainPagerAdapter extends FragmentPagerAdapter {
                 return null;
         }
     }
+
 }
