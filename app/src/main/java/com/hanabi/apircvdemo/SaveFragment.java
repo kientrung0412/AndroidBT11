@@ -54,7 +54,7 @@ public class SaveFragment extends Fragment implements NewsAdapter.NewsItemOnClic
     @Override
     public void itemOnClick(News news) {
         Intent intent = new Intent(activity, DetailActivity.class);
-        intent.putExtra(MainActivity.EXTRA_URL_NEWS, news.getPathSave());
+        intent.putExtra(MainActivity.EXTRA_URL_NEWS, "file://" + news.getPathSave());
         startActivity(intent);
     }
 

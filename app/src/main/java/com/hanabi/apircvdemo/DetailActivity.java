@@ -19,8 +19,9 @@ public class DetailActivity extends AppCompatActivity {
         String url = intent.getStringExtra(MainActivity.EXTRA_URL_NEWS);
 
         webView = findViewById(R.id.wv_detail);
-        webView.loadUrl(url);
         webView.getSettings().setJavaScriptEnabled(true);
+        webView.loadUrl(url);
+
     }
 
 

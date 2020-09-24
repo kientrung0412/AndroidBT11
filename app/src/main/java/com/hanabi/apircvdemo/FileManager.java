@@ -25,7 +25,9 @@ public class FileManager {
 
         ReadableByteChannel readableByteChannel = Channels.newChannel(new URL(link).openStream());
 
-        File file = new File(path + System.currentTimeMillis() + ".html");
+        path = String.format("%s%s.html", path, System.currentTimeMillis());
+
+        File file = new File(path);
         file.getParentFile().mkdirs();
         file.createNewFile();
 
