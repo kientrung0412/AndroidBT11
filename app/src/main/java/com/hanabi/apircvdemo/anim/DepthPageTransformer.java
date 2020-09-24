@@ -1,4 +1,4 @@
-package com.hanabi.apircvdemo.animation;
+package com.hanabi.apircvdemo.anim;
 
 import android.view.View;
 

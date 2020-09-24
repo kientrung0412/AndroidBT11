@@ -28,6 +28,8 @@ public class News {
     private String publishedAt;
     @ColumnInfo
     private Boolean bookmarked = false;
+    @ColumnInfo
+    private String pathSave;
 
     public long getId() {
         return id;
@@ -83,5 +85,13 @@ public class News {
 
     public void setBookmarked(Boolean bookmarked) {
         this.bookmarked = bookmarked;
+    }
+
+    public String getPathSave() {
+        return pathSave;
+    }
+
+    public void setPathSave(String pathSave) {
+        this.pathSave = pathSave;
     }
 }

@@ -1,6 +1,5 @@
 package com.hanabi.apircvdemo;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SearchView;
 import androidx.appcompat.widget.Toolbar;
@@ -8,13 +7,17 @@ import androidx.fragment.app.Fragment;
 
 import androidx.viewpager.widget.ViewPager;
 
+import android.app.DownloadManager;
+import android.content.BroadcastReceiver;
 import android.os.Bundle;
 import android.view.Menu;
+import android.widget.Toast;
 
 import com.google.android.material.tabs.TabLayout;
-import com.google.android.material.tabs.TabLayoutMediator;
 import com.hanabi.apircvdemo.adapter.MainPagerAdapter;
-import com.hanabi.apircvdemo.animation.DepthPageTransformer;
+import com.hanabi.apircvdemo.anim.DepthPageTransformer;
+
+import java.io.File;
 
 
 public class MainActivity extends AppCompatActivity implements SearchView.OnQueryTextListener {
@@ -31,7 +34,6 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
     private SaveFragment saveFragment = new SaveFragment();
     private BookmarksFragment bookmarksFragment = new BookmarksFragment();
 
-
     private Fragment[] fragments = new Fragment[]{newsFragment, saveFragment, bookmarksFragment};
 
     @Override
@@ -39,8 +41,8 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         initViews();
-
     }
+
 
     private void initViews() {
         toolbar = findViewById(R.id.tb_main);
